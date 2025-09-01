@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breedify Web Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #27ae60;
+            --primary-hover: #219653;
+            --light-gray: #f7f8fc;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* Dark background for the particles to show up */
+        }
+
+        /* --- PARTICLES.JS BACKGROUND --- */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0; /* Places it behind all other content */
+        }
+
+        .website-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width:100%;
+            position: relative; /* Required to sit on top of the particle background */
+            z-index: 1;
+        }
+        
+        header.main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0 5%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        header nav a, #logout-btn {
+            margin-left: 25px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        header nav a:hover, #logout-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        main.content-area {
+            flex-grow: 1;
+            padding: 40px 5%;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .button:active { transform: scale(0.98); }
+        .button-primary { background-color: var(--primary-color); }
+        .button-primary:hover { background-color: var(--primary-hover); }
+
+        /* --- NEW LOGIN PAGE STYLES --- */
+        #login-page.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 420px;
+            text-align: left;
+        }
+        .login-card h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: var(--text-color);
+        }
+        .login-card p {
+            color: #777;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: var(--light-gray);
+        }
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .login-options a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-card .button { width: 100%; }
+        .signup-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+        }
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap; 
+            gap: 15px;
+        }
+        h1,h2,h3 { color: #fff; }
+        .submission-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            color: var(--text-color);
+        }
+        .submission-card strong, .submission-card p {
+            color: var(--text-color);
+        }
+
+        .results-layout {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .results-layout .image-column { flex: 1; }
+        .results-layout .image-column img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+        .results-layout .data-column { flex: 1.2; background-color: #fff; padding: 30px; border-radius: 12px; }
+        .results-layout .data-column h3 { color: var(--text-color); }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .results-table th, .results-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        .results-buttons { display: flex; gap: 15px; }
+
+        .camera-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .camera-modal.active { opacity: 1; pointer-events: auto; }
+        .camera-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        #camera-feed { width: 100%; height: 100%; object-fit: cover; }
+        .camera-controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        #capture-btn {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid #ccc;
+            cursor: pointer;
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            text-shadow: 0 0 5px black;
+        }
+        
+        @media (max-width: 768px) {
+            header nav { display: none; }
+            .results-layout { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="website-container">
+        <header class="main-header">
+            <div class="logo">🐾 Breedify</div>
+            <nav>
+                <a onclick="showPage('dashboard-page')">Dashboard</a>
+                <a onclick="showPage('dashboard-page')">History</a>
+                <a onclick="showPage('dashboard-page')">Profile</a>
+                <span id="logout-btn">Logout</span>
+            </nav>
+        </header>
+
+        <main class="content-area">
+
+            <div id="login-page" class="page">
+                <div class="login-card">
+                    <h1>Welcome Back!</h1>
+                    <p>Sign in to continue to Breedify.</p>
+                    
+                    <div class="form-group">
+                        <label for="email">E-Mail</label>
+                        <input type="text" id="email" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password">
+                    </div>
+
+                    <div class="login-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember Me</label>
+                        </div>
+                        <a href="#">Forgot Your Password?</a>
+                    </div>
+                    
+                    <button id="login-btn" class="button button-primary">SIGN IN</button>
+
+                    <div class="signup-link">
+                        Don't have an account? <a href="#">Signup now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dashboard-page" class="page">
+                <div class="container">
+                    <div class="dashboard-header">
+                        <h1>Dashboard</h1>
+                        <button id="start-btn" class="button button-primary">Start New Classification</button>
+                    </div>
+                    <h2>Recent Submissions</h2>
+                    <div class="cards-grid">
+                        <div class="submission-card">
+                            <strong>Buffalo #34AB</strong><p>Status: Approved<br>Date: 01 Sep 2025</p>
+                        </div>
+                        <div class="submission-card">
+                            <strong>Cattle #98ZX</strong><p>Status: Approved<br>Date: 30 Aug 2025</p>
+                        </div>
+                        <div class="submission-card">
+                            <strong>Cattle #12FG</strong><p>Status: Pending<br>Date: 28 Aug 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-page" class="page">
+                <div class="container">
+                    <h1>Review Classification</h1>
+                    <div class="results-layout">
+                        <div class="image-column">
+                            <img id="captured-image-preview" src="https://via.placeholder.com/800x450.png?text=Captured+Image" alt="Captured Animal">
+                        </div>
+                        <div class="data-column">
+                            <h3>Classification Data</h3>
+                            <table class="results-table">
+                                <thead>
+                                    <tr><th>Trait</th><th>Value</th><th>AI Score</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Body Length</td><td>155 cm</td><td>8/10</td></tr>
+                                    <tr><td>Height at Withers</td><td>130 cm</td><td>7/10</td></tr>
+                                    <tr><td>Rump Angle</td><td>42°</td><td>9/10</td></tr>
+                                    <tr><td>Chest Width</td><td>45 cm</td><td>7/10</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="results-buttons">
+                                <button id="submit-btn" class="button button-primary">Submit to BPA</button>
+                                <button id="recapture-btn" class="button" style="background-color: #ccc; color:#333;">Recapture Image</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="camera-modal" class="camera-modal">
+        <div class="camera-container">
+            <video id="camera-feed" autoplay playsinline></video>
+            <div class="camera-controls">
+                <button id="capture-btn"></button>
+            </div>
+            <span id="close-camera-btn" class="close-modal-btn">&times;</span>
+        </div>
+    </div>
+    
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <script>
+        /* --- INITIALIZE PARTICLES.JS --- */
+        particlesJS.load('particles-js', 'https://particles.js.org/samples/assets/particles.json', function() {
+            console.log('callback - particles.js config loaded');
+        });
+
+        const mainHeader = document.querySelector('.main-header');
+        const pages = document.querySelectorAll('.page');
+        const cameraModal = document.getElementById('camera-modal');
+        let videoStream = null;
+
+        function showPage(pageId) {
+            if (pageId === 'login-page') {
+                mainHeader.style.display = 'none';
+            } else {
+                mainHeader.style.display = 'flex';
+            }
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === pageId);
+            });
+        }
+
+        async function startCamera() {
+            cameraModal.classList.add('active');
+            try {
+                const video = document.getElementById('camera-feed');
+                const constraints = { video: { facingMode: 'environment' } };
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = videoStream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Could not access the camera. Please ensure you have given permission and are on a secure server (https or localhost).");
+                closeCamera();
+            }
+        }
+
+        function closeCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            cameraModal.classList.remove('active');
+        }
+
+        document.getElementById('login-btn').addEventListener('click', () => showPage('dashboard-page'));
+        document.getElementById('logout-btn').addEventListener('click', () => showPage('login-page'));
+        
+        document.getElementById('start-btn').addEventListener('click', startCamera);
+        document.getElementById('close-camera-btn').addEventListener('click', closeCamera);
+        document.getElementById('recapture-btn').addEventListener('click', startCamera);
+
+        document.getElementById('capture-btn').addEventListener('click', () => {
+            if (!videoStream) return;
+            const video = document.getElementById('camera-feed');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            document.getElementById('captured-image-preview').src = canvas.toDataURL('image/jpeg');
+
+            closeCamera();
+            setTimeout(() => {
+                showPage('results-page');
+            }, 300);
+        });
+        
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            alert('Results submitted to BPA successfully!');
+            showPage('dashboard-page');
+        });
+        
+        // Start on the login page
+        showPage('login-page');
+    </script>
+</body>
+</html>
