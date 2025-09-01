@@ -1,79 +1,95 @@
 import { useState } from 'react';
-import './App.css'; // You can add your styles here later
+import './App.css';
+
+// Import all components from the components folder
+import Header from './components/Header';
+import CameraModal from './components/CameraModal';
+import LoginPage from './components/LoginPage';
+import Dashboard from './components/Dashboard';
+import ResultsPage from './components/ResultsPage';
 
 function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [page, setPage] = useState('login');
   const [result, setResult] = useState(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setResult(null); // Reset previous result
-      // Create a preview of the image
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleLogin = () => setPage('dashboard');
+  const handleLogout = () => setPage('login');
+  const handleStartClassification = () => setIsCameraOpen(true);
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert("Please select a file first!");
-      return;
-    }
-
+  // --- New Function to handle file uploads ---
+  const handleFileUpload = (file) => {
+    if (!file) return;
     setIsLoading(true);
+
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    formData.append("file", file);
+    const previewUrl = URL.createObjectURL(file);
 
-    try {
-      // Send the file to the FastAPI backend
-      const response = await fetch("http://127.0.0.1:8000/classify/", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Something went wrong with the classification.");
-      }
-
-      const data = await response.json();
-      setResult(data);
-
-    } catch (error) {
+    // This part is the same as the capture logic
+    fetch("http://127.0.0.1:8000/classify/", {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Classification failed.");
+      return response.json();
+    })
+    .then(data => {
+      setResult({ ...data, previewUrl });
+      setPage('results');
+    })
+    .catch(error => {
       console.error("Error:", error);
       alert(error.message);
-    } finally {
-      setIsLoading(false);
+    })
+    .finally(() => setIsLoading(false));
+  };
+
+  const handleCapture = (imageBlob) => {
+    setIsCameraOpen(false);
+    // We can reuse the file upload logic!
+    const capturedFile = new File([imageBlob], "capture.jpg", { type: "image/jpeg" });
+    handleFileUpload(capturedFile);
+  };
+
+  const renderCurrentPage = () => {
+    switch (page) {
+      case 'dashboard':
+        // Pass the new handler function as a prop
+        return <Dashboard 
+                  onStartClassification={handleStartClassification} 
+                  onFileUpload={handleFileUpload} 
+                />;
+      case 'results':
+        return <ResultsPage 
+                  result={result} 
+                  onRecapture={handleStartClassification} 
+                  onSubmit={() => {
+                    alert('Results submitted to BPA successfully!');
+                    setPage('dashboard');
+                  }}
+                />;
+      default:
+        return <LoginPage onLogin={handleLogin} />;
     }
   };
 
   return (
-    <div className="container">
-      <h1>🐾 Breedify</h1>
-      <p>Upload an image of cattle or a buffalo to classify it.</p>
+    <div className="website-container">
+      {isLoading && <div className="loading-overlay">Classifying...</div>}
+      {page !== 'login' && <Header onLogout={handleLogout} />}
       
-      <div className="uploader-box">
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {preview && <img src={preview} alt="Preview" className="image-preview" />}
-        <button onClick={handleUpload} disabled={isLoading}>
-          {isLoading ? "Classifying..." : "Classify Image"}
-        </button>
-      </div>
+      <main className="content-area">
+        {renderCurrentPage()}
+      </main>
 
-      {result && (
-        <div className="result-box">
-          <h2>Classification Result</h2>
-          <p><strong>Filename:</strong> {result.filename}</p>
-          <p><strong>Predicted Breed:</strong> {result.classification}</p>
-          <p><strong>Confidence:</strong> {(result.confidence_score * 100).toFixed(2)}%</p>
-        </div>
-      )}
+      <CameraModal 
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCapture}
+      />
     </div>
   );
 }
