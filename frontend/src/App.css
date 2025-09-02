@@ -134,3 +134,22 @@ main.content-area {
   display: flex;
   gap: 15px; /* Adds space between the buttons */
 }
+
+/* --- Message Styles --- */
+.error-message {
+  color: #c0392b;
+  background-color: #fbeae5;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.success-message {
+  color: #27ae60;
+  background-color: #eaf7f0;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 15px;
+}

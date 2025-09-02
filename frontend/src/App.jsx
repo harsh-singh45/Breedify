@@ -1,38 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
-// Import all components from the components folder
+// Import all components
 import Header from './components/Header';
 import CameraModal from './components/CameraModal';
 import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage'; // New import
 import Dashboard from './components/Dashboard';
 import ResultsPage from './components/ResultsPage';
 
 function App() {
+  // Page can be 'login', 'signup', 'dashboard', 'results'
   const [page, setPage] = useState('login');
+  // Auth token is stored in state and localStorage to keep the user logged in
+  const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
+  
   const [result, setResult] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => setPage('dashboard');
-  const handleLogout = () => setPage('login');
-  const handleStartClassification = () => setIsCameraOpen(true);
+  // If a token exists, go to the dashboard
+  useEffect(() => {
+    if (authToken) {
+      setPage('dashboard');
+    }
+  }, [authToken]);
 
-  // --- New Function to handle file uploads ---
+  const handleLoginSuccess = (token) => {
+    localStorage.setItem('authToken', token);
+    setAuthToken(token);
+    setPage('dashboard');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setAuthToken(null);
+    setPage('login');
+  };
+
   const handleFileUpload = (file) => {
-    if (!file) return;
+    if (!file || !authToken) return;
     setIsLoading(true);
 
     const formData = new FormData();
     formData.append("file", file);
     const previewUrl = URL.createObjectURL(file);
 
-    // This part is the same as the capture logic
+    // Add the Authorization header to the request
     fetch("http://127.0.0.1:8000/classify/", {
       method: "POST",
+      headers: { 'Authorization': `Bearer ${authToken}` },
       body: formData,
     })
     .then(response => {
+      if (response.status === 401) throw new Error("Authentication failed. Please log in again.");
       if (!response.ok) throw new Error("Classification failed.");
       return response.json();
     })
@@ -43,13 +64,13 @@ function App() {
     .catch(error => {
       console.error("Error:", error);
       alert(error.message);
+      if (error.message.includes("Authentication")) handleLogout();
     })
     .finally(() => setIsLoading(false));
   };
 
   const handleCapture = (imageBlob) => {
     setIsCameraOpen(false);
-    // We can reuse the file upload logic!
     const capturedFile = new File([imageBlob], "capture.jpg", { type: "image/jpeg" });
     handleFileUpload(capturedFile);
   };
@@ -57,29 +78,24 @@ function App() {
   const renderCurrentPage = () => {
     switch (page) {
       case 'dashboard':
-        // Pass the new handler function as a prop
-        return <Dashboard 
-                  onStartClassification={handleStartClassification} 
-                  onFileUpload={handleFileUpload} 
-                />;
+        return <Dashboard onStartClassification={() => setIsCameraOpen(true)} onFileUpload={handleFileUpload} />;
       case 'results':
         return <ResultsPage 
                   result={result} 
-                  onRecapture={handleStartClassification} 
-                  onSubmit={() => {
-                    alert('Results submitted to BPA successfully!');
-                    setPage('dashboard');
-                  }}
+                  onRecapture={() => setIsCameraOpen(true)} 
+                  onSubmit={() => { alert('Results submitted!'); setPage('dashboard'); }}
                 />;
-      default:
-        return <LoginPage onLogin={handleLogin} />;
+      case 'signup':
+        return <SignupPage onSwitchToLogin={() => setPage('login')} />;
+      default: // 'login'
+        return <LoginPage onLoginSuccess={handleLoginSuccess} onSwitchToSignup={() => setPage('signup')} />;
     }
   };
 
   return (
     <div className="website-container">
       {isLoading && <div className="loading-overlay">Classifying...</div>}
-      {page !== 'login' && <Header onLogout={handleLogout} />}
+      {page !== 'login' && page !== 'signup' && <Header onLogout={handleLogout} />}
       
       <main className="content-area">
         {renderCurrentPage()}
