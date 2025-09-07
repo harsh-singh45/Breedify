@@ -87,6 +87,8 @@ function App() {
                 />;
       case 'signup':
         return <SignupPage onSwitchToLogin={() => setPage('login')} />;
+      case 'history': // New case for the history page
+      return <HistoryPage />;
       default: // 'login'
         return <LoginPage onLoginSuccess={handleLoginSuccess} onSwitchToSignup={() => setPage('signup')} />;
     }

@@ -2,13 +2,16 @@
   --primary-color: #27ae60;
   --primary-hover: #219653;
   --secondary-color: #7f8c8d;
-  --text-color: #333;
-  --border-color: #e0e0e0;
-  --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  --text-color-dark: #333;
+  --text-color-light: #f0f0f0;
+  --border-color: #3e4c59; /* Darker border for the theme */
+  --card-bg: #1e293b; /* Dark blue-gray for cards */
+  --card-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background-color: #f7f8fc;
+  background-color: #111827; /* Dark blue background */
+  color: var(--text-color-light); /* Default text color is now light */
 }
