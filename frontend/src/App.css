@@ -319,7 +319,7 @@ h2 {
   height: 150px;
   background-size: cover;
   background-position: center;
-  background-image: url('/src/assets/hero-image-1.jpg');
+  background-image: url('/src/assets/hero-image-2.jpg');
 }
 .submission-card-image.image-2 {
   background-image: url('/src/assets/hero-image-4.jpg');
@@ -475,3 +475,377 @@ h2 {
 }
 .error-message { color: #f87171; background-color: #4c1d1d; }
 .success-message { color: #4ade80; background-color: #164e2d; }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  
+  /* --- THE FIX --- */
+  /* 1. Change position to sticky */
+  position: sticky;
+  /* 2. It will now stick 1rem from the top of the screen */
+  top: 1rem;
+  
+  z-index: 1000;
+  border-radius: 12px;
+  overflow: hidden;
+  width: calc(100% - 2rem); /* Adjust width to account for margins */
+  margin: 1rem auto; /* Center the header and give it space */
+
+  /* Transitions remain the same */
+  transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- FIX for Header Overlap --- */
+/* Make sure you REMOVE the old padding rule. It is no longer needed. */
+.content-area {
+  /* No padding-top is necessary with position: sticky */
+  padding-top: 0; 
+}
+
+
+/* --- Glassmorphism Effect (Static) --- */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.25); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* --- Dynamic Styles on Scroll --- */
+.header.scrolled {
+  padding: 0.75rem 2rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Logo Styling --- */
+.header .header-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  transition: font-size 0.3s ease;
+}
+
+.header.scrolled .header-logo {
+  font-size: 1.5rem;
+}
+
+/* Animated Gradient Text for Logo */
+.animated-gradient-text {
+  background: linear-gradient(
+    90deg,
+    #16a34a, /* Deep Green */
+    #4ade80, /* Medium Green */
+    #a3e635, /* Bright Lime */
+    #2dd4bf  /* Cool Teal */
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-animation 4s linear infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Logout Button --- */
+.header-nav .logout-button {
+  background-color: rgba(239, 68, 68, 0.7);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-nav .logout-button:hover {
+  background-color: rgba(239, 68, 68, 1);
+  transform: translateY(-2px);
+}
+
+/* --- Scroll Progress Bar --- */
+.scroll-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #16a34a,
+    #4ade80,
+    #a3e635
+  );
+  border-radius: 0 2px 2px 0;
+  transition: width 0.05s ease-out;
+}
+/* --- CSS Reset & Box Sizing Fix --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Header Navigation Links --- */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-nav a {
+  text-decoration: none;
+  color: #0daf46; /* CHANGED to a dark, highly visible color */
+  font-weight: 600;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.header-nav a:hover {
+  color: #48bb78; /* CHANGED to the green accent color on hover */
+}
+
+/* Underline effect for active/hover links */
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #48bb78; /* Green accent */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.header-nav a:hover::after,
+.header-nav a.active::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
+/* --- New About Page V2 Styles --- */
+
+/* 1. Modern Font Pairing */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Roboto:wght@400;500&display=swap');
+
+/* 2. Page Container */
+.about-page-v2 {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  background-color: #fdfdfd;
+}
+
+/* 3. Hero Section */
+.about-hero-v2 {
+  padding: 8rem 2rem 10rem 2rem;
+  text-align: center;
+  background-color: #1a202c; /* Dark background */
+  color: #fff;
+  position: relative;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.hero-title .gradient-text {
+  background: linear-gradient(90deg, #38b2ac, #48bb78, #a3e635);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-tagline {
+  font-size: 1.25rem;
+  color: #a0aec0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 4. Angled Divider */
+.angled-divider {
+  position: relative;
+  height: 10vh;
+  background-color: #1a202c;
+}
+.angled-divider::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fdfdfd;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+
+/* 5. General Section Styling & Scroll Animations */
+.about-section-v2 {
+  padding: 4rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.about-section-v2.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.about-section-v2 h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* 6. Split Layout */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.split-panel {
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+}
+.split-icon {
+  margin: 0 auto 1.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.split-icon svg {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+}
+.split-panel h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+.split-panel p {
+  line-height: 1.7;
+}
+
+/* Earthy vs Neon AI Color Scheme */
+.manual-side {
+  background-color: #f7fafc; /* Earthy light gray */
+  border: 1px solid #e2e8f0;
+}
+.manual-side .split-icon { background-color: #ed8936; } /* Earthy orange */
+.ai-side {
+  background-color: #1a202c; /* AI dark */
+  color: #fff;
+}
+.ai-side .split-icon { background: linear-gradient(90deg, #38b2ac, #48bb78); } /* AI neon green */
+
+/* 7. Workflow Timeline */
+.workflow-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  padding-left: 2rem; /* Space for the line */
+}
+.workflow-timeline::before {
+  content: '';
+  position: absolute;
+  left: 28px; /* Center on the icon */
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  background-color: #e2e8f0;
+  border-radius: 2px;
+}
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  position: relative;
+}
+.timeline-icon {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #1a202c;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  z-index: 1;
+  border: 4px solid #fdfdfd;
+}
+.timeline-content h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 8. Impact Cards with Glassmorphism */
+.impact-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+.impact-card-v2 {
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  /* Glassmorphism Panel */
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+.impact-card-v2 h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #38b2ac; /* Teal accent */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  .split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+

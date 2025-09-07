@@ -5,12 +5,13 @@ import './App.css';
 import Header from './components/Header';
 import CameraModal from './components/CameraModal';
 import LoginPage from './components/LoginPage';
-import SignupPage from './components/SignupPage'; // New import
+import SignupPage from './components/SignupPage';
 import Dashboard from './components/Dashboard';
 import ResultsPage from './components/ResultsPage';
+import AboutPage from './components/AboutPage';
 
 function App() {
-  // Page can be 'login', 'signup', 'dashboard', 'results'
+  // Page can be 'login', 'signup', 'dashboard', 'results', 'about'
   const [page, setPage] = useState('login');
   // Auth token is stored in state and localStorage to keep the user logged in
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
@@ -87,8 +88,8 @@ function App() {
                 />;
       case 'signup':
         return <SignupPage onSwitchToLogin={() => setPage('login')} />;
-      case 'history': // New case for the history page
-      return <HistoryPage />;
+      case 'about':
+        return <AboutPage />;
       default: // 'login'
         return <LoginPage onLoginSuccess={handleLoginSuccess} onSwitchToSignup={() => setPage('signup')} />;
     }
@@ -97,7 +98,14 @@ function App() {
   return (
     <div className="website-container">
       {isLoading && <div className="loading-overlay">Classifying...</div>}
-      {page !== 'login' && page !== 'signup' && <Header onLogout={handleLogout} />}
+      
+      {page !== 'login' && page !== 'signup' && 
+        <Header 
+          onLogout={handleLogout} 
+          onNavigate={setPage} 
+          currentPage={page} 
+        />
+      }
       
       <main className="content-area">
         {renderCurrentPage()}
