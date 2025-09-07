@@ -27,10 +27,8 @@ export default function Header({ onLogout, onNavigate, currentPage }) {
 
   return (
     <header className={`header glass-effect ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="header-logo">
-        <span className="animated-gradient-text" onClick={() => onNavigate('dashboard')} style={{cursor: 'pointer'}}>
-          Breedify
-        </span>
+      <div className="header-logo" onClick={() => onNavigate('dashboard')} style={{cursor: 'pointer'}}>
+        🐾 <span className="animated-gradient-text">Breedify</span>
       </div>
       <nav className="header-nav">
         <a href="#" onClick={() => onNavigate('dashboard')} className={currentPage === 'dashboard' ? 'active' : ''}>

@@ -38,11 +38,23 @@ export default function Dashboard({ onStartClassification, onFileUpload }) {
 
   return (
     <div className="container">
+      {/* 1. Hero Section with Gradient Title */}
+      <section className="about-hero-v2">
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="gradient-text">Revolutionizing</span> Livestock Management
+          </h1>
+          <p className="hero-tagline">
+            Bringing AI-powered accuracy to India's cattle and buffalo breed identification.
+          </p>
+        </div>
+      </section>
+
+      {/* --- Original Dashboard Content --- */}
       <div className="dashboard-header">
         <h1>Dashboard</h1>
       </div>
 
-      {/* --- NEW: Stats Grid --- */}
       <div className="stats-grid">
         <div className="stat-card">
           <h3>Total Submissions</h3>
@@ -62,7 +74,6 @@ export default function Dashboard({ onStartClassification, onFileUpload }) {
         </div>
       </div>
 
-      {/* --- NEW: Upload Area --- */}
       <div className="upload-section">
         <h2>Start a New Classification</h2>
         <div 
@@ -88,7 +99,6 @@ export default function Dashboard({ onStartClassification, onFileUpload }) {
         </div>
       </div>
 
-      {/* Hidden file input remains the same */}
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -97,7 +107,6 @@ export default function Dashboard({ onStartClassification, onFileUpload }) {
         accept="image/*"
       />
 
-      {/* --- REVISED: Recent Submissions --- */}
       <h2>Recent Submissions</h2>
       <div className="cards-grid">
         <div className="submission-card">

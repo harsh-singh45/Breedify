@@ -19,7 +19,6 @@ export default function LoginPage({ onLoginSuccess, onSwitchToSignup }) {
 
   // useEffect hook to automatically cycle through images
   useEffect(() => {
-    // UPDATED: Interval duration is now 8 seconds (8000 milliseconds)
     const intervalId = setInterval(() => {
       setCurrentImageIndex(prevIndex => (prevIndex + 1) % heroImages.length);
     }, 8000);
@@ -63,8 +62,9 @@ export default function LoginPage({ onLoginSuccess, onSwitchToSignup }) {
       {/* Left Column: Branding and Image */}
       <div className="login-hero-section">
         <div className="login-hero-content">
+          {/* THIS IS THE MODIFIED LINE */}
           <div className="app-logo-hero anim-fade-in-up anim-delay-1">
-            🐾 Breedify
+            🐾 <span className="animated-gradient-text">Breedify</span>
           </div>
           <h1 className="anim-fade-in-up anim-delay-2">Intelligent Breed Classification</h1>
           <p className="anim-fade-in-up anim-delay-3">Instantly identify animal breeds with cutting-edge AI technology.</p>
